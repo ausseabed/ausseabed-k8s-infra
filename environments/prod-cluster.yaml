@@ -15,4 +15,12 @@ managedNodeGroups:
     labels: {role: worker}
     tags:
       nodegroup-role: worker
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+        externalDNS: true
+        certManager: true
+        ebs: true
+        albIngress: true
+        cloudWatch: true
     

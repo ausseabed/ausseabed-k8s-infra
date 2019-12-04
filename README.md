@@ -27,7 +27,7 @@ With this in mind, the following banner should be used in any source code file t
 1. AWS Account with programmic access and with permissions to create AWS resources. If specific permissions need to be specified view this thread: https://github.com/weaveworks/eksctl/issues/204.
 2. awscli, see: https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html
 3. eksctl, see: https://eksctl.io/introduction/installation/
-4. kubectl, see: https://docs.aws.amazon.com/eks/latest/userguide/configure-kubectl.html
+4. kubectl, see: https://docs.aws.amazon.com/eks/latest/userguide/configure-kubectl.html. Make sure you have the latest version of Kubectl as earlier versions are not compatable with eks
 5. aws-iam-authenticator, see: https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html
 
 ## Setup
@@ -103,10 +103,72 @@ To delete the cluster run:
     eksctl delete cluster -f environments/prod-cluster.yaml
 ```
 
+## Deploying an nginx load balancer and cert-manager to the cluster
 
+Download Helm the package manager for Kubernetes:
+https://helm.sh/docs/using_helm/#installing-helm
 
+Create the helm tiller:
+```
+    kubectl -n kube-system create serviceaccount tiller
+    kubectl create clusterrolebinding tiller \
+    --clusterrole=cluster-admin \
+    --serviceaccount=kube-system:tiller
+    helm init --service-account tiller
+```
 
+Add the incubator helm charts list
+```
+    helm install stable/nginx-ingress --name nginx-ingress --set controller.publishService.enabled=true
+```
 
+Check it deploys:
+```
+    kubectl get services -o wide -w nginx-ingress-controller
+```
 
+Update a route 53 record to point at this created load balancer.
 
+Add the following innotation to the ingresses to use the nginx loadbalancer:
+```
+    annotations:
+        kubernetes.io/ingress.class: nginx
+```
 
+Now for cert-manager run the following commands:
+
+Deploy credential defintions:
+```
+    kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.11/deploy/manifests/00-crds.yaml
+```
+
+Create a cert-manager namespace:
+```
+    kubectl create namespace cert-manager
+```
+
+Add repo and deploy cert manager:
+```
+    helm repo add jetstack https://charts.jetstack.io
+    helm install --name cert-manager --version v0.11.0 --namespace cert-manager jetstack/cert-manager
+```
+
+Create the production issuer:
+```
+    kubectl create -f cert-manager/production_issuer.yaml
+```
+
+Finally update your ingress file with the following annotations
+```
+    annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+        kubernetes.io/ingress.class: nginx
+    spec:
+    tls:
+    - hosts:
+        - hw1.your_domain
+        - hw2.your_domain
+        secretName: sample-app-kubernetes-tls
+```
+
+See example app in the sample-app folder.
