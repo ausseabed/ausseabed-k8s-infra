@@ -1,6 +1,6 @@
 # AusSeabed Survey Request and Planning Tool - Elastic Kubernetes Service(EKS) Cluster Deployment 
 
-This repo container the code and process to create a EKS cluster with the eksctl tool and configure access to it.
+This repo contains the config files and process to create a EKS cluster with the eksctl tool and configure access to it.
 
 # Licensing Terms
 
@@ -22,18 +22,17 @@ With this in mind, the following banner should be used in any source code file t
 
     Distributed under the terms of the Apache License, Version 2.0.
 
-
 # Dependencies
 
 1. AWS Account with programmic access and with permissions to create AWS resources. If specific permissions need to be specified view this thread: https://github.com/weaveworks/eksctl/issues/204.
-2. awscli installed, see: https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html
-3. eksctl installed, see: https://eksctl.io/introduction/installation/
-4. kubectl installed: https://docs.aws.amazon.com/eks/latest/userguide/configure-kubectl.html
-5. aws-iam-authenticator installed: https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html
+2. awscli, see: https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html
+3. eksctl, see: https://eksctl.io/introduction/installation/
+4. kubectl, see: https://docs.aws.amazon.com/eks/latest/userguide/configure-kubectl.html
+5. aws-iam-authenticator, see: https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html
 
 ## Setup
 
-The prod-cluster.yaml file contains eksctl setup parameters. See eksctl documentation for more information: https://eksctl.io/.
+The environments/prod-cluster.yaml file contains eksctl setup parameters. See eksctl documentation for more information: https://eksctl.io/.
 
 Step 1: Configure awscli:
 ```
@@ -42,7 +41,7 @@ Step 1: Configure awscli:
 
 Step 2: Create the cluster:
 ```
-    eksctl create cluster -f cluster.yaml
+    eksctl create cluster -f environments/prod-cluster.yaml
 ```
 
 Step 3: Check the cluster:
@@ -50,11 +49,13 @@ Step 3: Check the cluster:
     kubectl get pods --all-namespaces
 ```
 
-You should see some running pods. If so you are ready to deploy your applications.
+You should see running pods. If so you are ready to deploy your applications.
 
 ## Adding addional users access to the cluster
 
-Get your account id
+To add users other than yourself to access kubectl you need to add them the kubernetes iamidentitymapping.
+
+Get your account id:
 ```
     ACCOUNT_ID=$(aws sts get-caller-identity --output text --query 'Account')
 ```   
@@ -66,12 +67,14 @@ Then give access with the following command replacing `test1` in the arn and use
     eksctl create iamidentitymapping --cluster  ausseabed-prod-cluster --arn arn:aws:iam::$ACCOUNT_ID:user/test1 --group system:masters --username test1
 ```
 
-User then should configure their account
+This will allow specified user to access the cluster with the following command:
+
+Configure awscli with access credentials:
 ```
     aws configure
 ```
 
-Then get the kubectl config:
+Update their kubectl config:
 ```
     aws eks update-kubeconfig --name=ausseabed-prod-cluster --region=ap-southeast-2
 ```
@@ -86,7 +89,7 @@ Should then be able to run the following command successfully:
 To delete the cluster run:
 
 ```
-    eksctl delete cluster -f prod-cluster.yaml
+    eksctl delete cluster -f environments/prod-cluster.yaml
 ```
 
 
