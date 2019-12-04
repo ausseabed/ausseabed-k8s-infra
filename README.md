@@ -50,6 +50,8 @@ Create the cluster:
     eksctl create cluster -f environments/prod-cluster.yaml
 ```
 
+Go grab a coffee as this takes around 15mins.
+
 Check the cluster:
 ```
     kubectl get pods --all-namespaces
@@ -70,8 +72,8 @@ Then check IAM and note down the IAM username you wish to allow to access your e
 
 Give access with the following command replacing `test1` in the arn and username with their username:
 ```
-    eksctl create iamidentitymapping --cluster  ausseabed-prod-cluster --arn arn:aws:iam::$ACCOUNT_ID:user/**test1** 
-    --group system:masters --username **test1**
+    eksctl create iamidentitymapping --cluster  ausseabed-prod-cluster --arn arn:aws:iam::$ACCOUNT_ID:user/test1
+    --group system:masters --username test1
 ```
 
 ## Addional users instructions to access the cluster
