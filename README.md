@@ -32,19 +32,25 @@ With this in mind, the following banner should be used in any source code file t
 
 ## Setup
 
-The environments/prod-cluster.yaml file contains eksctl setup parameters. See eksctl documentation for more information: https://eksctl.io/.
+Clone the repository
+```
+    git clone https://github.com/ausseabed/ausseabed-k8s-infra.git
+    cd ausseabed-k8s-infra
+```
 
-Step 1: Configure awscli:
+Configure awscli with your access keys:
 ```
     aws configure
 ```
 
-Step 2: Create the cluster:
+The environments/prod-cluster.yaml file contains eksctl setup parameters. See eksctl documentation for more information: https://eksctl.io/.
+
+Create the cluster:
 ```
     eksctl create cluster -f environments/prod-cluster.yaml
 ```
 
-Step 3: Check the cluster:
+Check the cluster:
 ```
     kubectl get pods --all-namespaces
 ```
@@ -60,29 +66,32 @@ Get your account id:
     ACCOUNT_ID=$(aws sts get-caller-identity --output text --query 'Account')
 ```   
 
-Note down the IAM username you wish to allow to access your eks cluster.
+Then check IAM and note down the IAM username you wish to allow to access your eks cluster.
 
-Then give access with the following command replacing `test1` in the arn and username with their username:
+Give access with the following command replacing `test1` in the arn and username with their username:
 ```
-    eksctl create iamidentitymapping --cluster  ausseabed-prod-cluster --arn arn:aws:iam::$ACCOUNT_ID:user/test1 --group system:masters --username test1
+    eksctl create iamidentitymapping --cluster  ausseabed-prod-cluster --arn arn:aws:iam::$ACCOUNT_ID:user/*test1* 
+    --group system:masters --username *test1*
 ```
 
-This will allow specified user to access the cluster with the following command:
+## Addional users instructions to access the cluster
 
-Configure awscli with access credentials:
+Configure awscli with your credentials:
 ```
     aws configure
 ```
 
-Update their kubectl config:
+Update your kubectl config:
 ```
     aws eks update-kubeconfig --name=ausseabed-prod-cluster --region=ap-southeast-2
 ```
 
-Should then be able to run the following command successfully:
+Run the following command:
 ```
     kubectl get pods --all-namespaces
 ```
+
+You should see running pods. If so you are ready to deploy your applications.
 
 ### Deleting cluster
 
