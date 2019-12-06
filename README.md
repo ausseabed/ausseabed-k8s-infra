@@ -1,4 +1,4 @@
-# AusSeabed Survey Request and Planning Tool - Elastic Kubernetes Service(EKS) Cluster Deployment 
+# AusSeabed Survey Request and Planning Tool - Elastic Kubernetes Service(EKS) Cluster Deployment
 
 This repo contains the config files and process to create a EKS cluster with the eksctl tool and configure access to it.
 
@@ -108,6 +108,8 @@ To delete the cluster run:
 Download Helm the package manager for Kubernetes:
 https://helm.sh/docs/using_helm/#installing-helm
 
+**Note:** The following command lines assume helm v2 is being used. The helm tiller was removed in the latest helm release (v3).
+
 Create the helm tiller:
 ```
     kubectl -n kube-system create serviceaccount tiller
@@ -139,7 +141,7 @@ Now for cert-manager run the following commands:
 
 Deploy credential defintions:
 ```
-    kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.11/deploy/manifests/00-crds.yaml
+    kubectl apply --validate=false -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.11/deploy/manifests/00-crds.yaml
 ```
 
 Create a cert-manager namespace:
@@ -155,7 +157,7 @@ Add repo and deploy cert manager:
 
 Create the production issuer:
 ```
-    kubectl create -f cert-manager/production_issuer.yaml
+    kubectl create -f cert-manager/LetsEncrypt-prod.yaml
 ```
 
 Finally update your ingress file with the following annotations
