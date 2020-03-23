@@ -1,0 +1,27 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: qa4mbes-ingress
+  namespace: qa4mbes
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, OPTIONS"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: 100m
+spec:
+  tls:
+  - hosts:
+    - www.qa4mbes.staging.frontiersi.io
+    secretName: qa4mbes-tls
+  rules:
+  - host: www.qa4mbes.staging.frontiersi.io
+    http:
+      paths:
+      - backend:
+          serviceName: www
+          servicePort: 80

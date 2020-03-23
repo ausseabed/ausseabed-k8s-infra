@@ -1,0 +1,41 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: www
+  namespace: spt
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        k8s-app: www
+    spec:
+      containers:
+        - image: ausseabed/spt-www:2d7bc7b
+          imagePullPolicy: Always
+          name: www
+          env:
+          - name: NODE_ENV
+            value: "production"
+          - name: AUTH_HOST
+            value: "https://ausseabed.auth.ap-southeast-2.amazoncognito.com/"
+          resources: {}
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: regcred
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: www
+  namespace: spt
+spec:
+  ports:
+   - port: 80
+     targetPort: 80
+  selector:
+    k8s-app: www

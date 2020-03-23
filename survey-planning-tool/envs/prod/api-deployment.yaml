@@ -1,0 +1,74 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: api
+  namespace: spt
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        k8s-app: api
+    spec:
+      containers:
+        - image: ausseabed/spt-api:2d7bc7b
+          imagePullPolicy: Always
+          name: api
+          env:
+          - name: AUTH_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: spt-secrets
+                key: AUTH_CLIENT_ID
+          - name: AUTH_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: spt-secrets
+                key: AUTH_CLIENT_SECRET
+          - name: JWT_TOKEN_KEY_PRIVATE
+            valueFrom:
+              secretKeyRef:
+                name: spt-secrets
+                key: JWT_TOKEN_KEY_PRIVATE
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: spt-secrets
+                key: POSTGRES_USER
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: spt-secrets
+                key: POSTGRES_PASSWORD
+          - name: NODE_ENV
+            value: "production"
+          - name: POSTGRES_HOSTNAME
+            value: "db-postgres"
+          - name: POSTGRES_PORT
+            value: "5432"
+          - name: POSTGRES_DATABASE
+            value: "postgres"
+          - name: AUTH_HOST
+            value: "https://ausseabed.auth.ap-southeast-2.amazoncognito.com/"
+          - name: AWS_REGION
+            value: "ap-southeast-2"
+          resources: {}
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: regcred
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api
+  namespace: spt
+spec:
+  ports:
+   - port: 3000
+     targetPort: 3000
+  selector:
+    k8s-app: api

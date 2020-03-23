@@ -1,0 +1,41 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: www
+  namespace: qa4mbes
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        k8s-app: www
+    spec:
+      containers:
+        - image: ausseabed/spt-www:latest-beta
+          imagePullPolicy: Always
+          name: www
+          env:
+          - name: NODE_ENV
+            value: "production"
+          - name: AUTH_HOST
+            value: https://staging.accounts.crcsi.com.au/
+          resources: {}
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: regcred
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: www
+  namespace: qa4mbes
+spec:
+  ports:
+   - port: 80
+     targetPort: 80
+  selector:
+    k8s-app: www

@@ -1,4 +1,4 @@
-# AusSeabed Survey Request and Planning Tool - Elastic Kubernetes Service(EKS) Cluster Deployment
+# AusSeabed - Elastic Kubernetes Service(EKS) Cluster Deployment
 
 This repo contains the config files and process to create a EKS cluster with the eksctl tool and configure access to it.
 

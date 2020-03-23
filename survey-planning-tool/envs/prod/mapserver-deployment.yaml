@@ -1,0 +1,55 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mapserver
+  namespace: spt
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        k8s-app: mapserver
+    spec:
+      containers:
+        - image: ausseabed/spt-mapserver:2d7bc7b
+          imagePullPolicy: Always
+          name: mapserver
+          env:
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: spt-secrets
+                key: POSTGRES_USER
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: spt-secrets
+                key: POSTGRES_PASSWORD
+          - name: POSTGRES_HOSTNAME
+            value: "db-postgres"
+          - name: POSTGRES_PORT
+            value: "5432"
+          - name: POSTGRES_DATABASE
+            value: "postgres"
+          - name: AWS_REGION
+            value: "ap-southeast-2"
+          resources: {}
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: regcred
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mapserver
+  namespace: spt
+spec:
+  ports:
+   - port: 80
+     targetPort: 80
+  selector:
+    k8s-app: mapserver
