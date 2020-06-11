@@ -14,7 +14,7 @@ spec:
         k8s-app: mapserver
     spec:
       containers:
-        - image: ausseabed/spt-mapserver:4ab877f
+        - image: ausseabed/spt-mapserver:5745af2
           imagePullPolicy: Always
           name: mapserver
           env:
