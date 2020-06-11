@@ -17,9 +17,16 @@ spec:
   tls:
   - hosts:
     - planning.ausseabed.gov.au
+    - coordination.ausseabed.gov.au
     secretName: spt-tls
   rules:
   - host: planning.ausseabed.gov.au
+    http:
+      paths:
+      - backend:
+          serviceName: www
+          servicePort: 80
+  - host: coordination.ausseabed.gov.au
     http:
       paths:
       - backend:

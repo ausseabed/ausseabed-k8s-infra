@@ -15,7 +15,7 @@ Source code for SPT can be found at the following link. This includes Docker and
 Different sets of config files are included for different environments, these can be found under the `./envs` folder.
 
 - `prod`
-  - The production deployment as is available at [https://planning.ausseabed.gov.au/](https://planning.ausseabed.gov.au/)
+  - The production deployment as is available at [https://coordination.ausseabed.gov.au/](https://coordination.ausseabed.gov.au/)
   - Running on the GA Marine AWS prod account
   - Redeployments are manual
   - Docker images are tagged to specific builds (config must be updated)
