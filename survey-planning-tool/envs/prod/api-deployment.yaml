@@ -14,7 +14,7 @@ spec:
         k8s-app: api
     spec:
       containers:
-        - image: ausseabed/spt-api:5745af2
+        - image: ausseabed/spt-api:a7e16a3
           imagePullPolicy: Always
           name: api
           env:
