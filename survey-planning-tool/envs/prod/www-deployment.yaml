@@ -14,7 +14,7 @@ spec:
         k8s-app: www
     spec:
       containers:
-        - image: ausseabed/spt-www:a7e16a3
+        - image: ausseabed/spt-www:ae837d8
           imagePullPolicy: Always
           name: www
           env:
