@@ -20,8 +20,6 @@ spec:
           env:
           - name: NODE_ENV
             value: "production"
-          - name: AUTH_HOST
-            value: https://staging.accounts.crcsi.com.au/
           resources: {}
       restartPolicy: Always
       imagePullSecrets:
