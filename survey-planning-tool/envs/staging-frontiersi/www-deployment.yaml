@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: www
@@ -7,11 +7,14 @@ spec:
   replicas: 1
   strategy:
     type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: www
   template:
     metadata:
       creationTimestamp: null
       labels:
-        k8s-app: www
+        app.kubernetes.io/name: www
     spec:
       containers:
         - image: ausseabed/spt-www:latest-beta
@@ -29,6 +32,8 @@ status: {}
 apiVersion: v1
 kind: Service
 metadata:
+  labels:
+    app.kubernetes.io/name: www
   name: www
   namespace: qa4mbes
 spec:
@@ -36,4 +41,4 @@ spec:
    - port: 80
      targetPort: 80
   selector:
-    k8s-app: www
+    app.kubernetes.io/name: www
