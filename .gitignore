@@ -1,2 +1,5 @@
+# macOS files
+.DS_Store
+
 # don't allow secrets to be committed
 **/secrets.yaml
