@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: api
@@ -7,11 +7,14 @@ spec:
   replicas: 1
   strategy:
     type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: api
   template:
     metadata:
       creationTimestamp: null
       labels:
-        k8s-app: api
+        app.kubernetes.io/name: api
     spec:
       containers:
         - image: ausseabed/spt-api:a6fc4ff
@@ -69,6 +72,8 @@ status: {}
 apiVersion: v1
 kind: Service
 metadata:
+  labels:
+    app.kubernetes.io/name: api
   name: api
   namespace: spt
 spec:
@@ -76,4 +81,4 @@ spec:
    - port: 3000
      targetPort: 3000
   selector:
-    k8s-app: api
+    app.kubernetes.io/name: api
