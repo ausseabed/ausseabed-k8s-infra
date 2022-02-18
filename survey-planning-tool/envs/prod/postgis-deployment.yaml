@@ -39,6 +39,10 @@ spec:
             value: "postgres"
           - name: PGDATA
             value: "/var/lib/postgresql/db-data/pgdata"
+          - name: POSTGIS_ENABLE_OUTDB_RASTERS
+            value: "1"
+          - name: POSTGIS_GDAL_ENABLED_DRIVERS
+            value: "ENABLE_ALL"
           resources: {}
           volumeMounts:
             - name: postgres-storage
