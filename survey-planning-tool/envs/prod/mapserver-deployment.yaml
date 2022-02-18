@@ -17,7 +17,7 @@ spec:
         app.kubernetes.io/name: mapserver
     spec:
       containers:
-        - image: ausseabed/spt-mapserver:a6fc4ff
+        - image: ausseabed/spt-mapserver:38c57fa
           imagePullPolicy: Always
           name: mapserver
           env:
