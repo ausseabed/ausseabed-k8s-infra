@@ -17,7 +17,7 @@ spec:
         app.kubernetes.io/name: www
     spec:
       containers:
-        - image: ausseabed/spt-www:6c6a578
+        - image: ausseabed/spt-www:02d2c6f
           imagePullPolicy: Always
           name: www
           env:
