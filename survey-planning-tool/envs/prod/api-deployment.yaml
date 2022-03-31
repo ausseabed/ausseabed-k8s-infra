@@ -17,7 +17,7 @@ spec:
         app.kubernetes.io/name: api
     spec:
       containers:
-        - image: ausseabed/spt-api:38c57fa
+        - image: ausseabed/spt-api:2262c28
           imagePullPolicy: Always
           name: api
           env:
