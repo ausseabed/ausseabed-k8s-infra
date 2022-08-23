@@ -58,4 +58,4 @@ spec:
      targetPort: 80
   type: NodePort
   selector:
-    app.kubernetes.io/name: db-postgres
+    app.kubernetes.io/name: mapserver
