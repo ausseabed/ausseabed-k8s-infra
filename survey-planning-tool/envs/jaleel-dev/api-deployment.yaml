@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  namespace: qa4mbes
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: api
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/name: api
+    spec:
+      containers:
+        - image: ausseabed/spt-api:latest-beta
+          imagePullPolicy: Always
+          name: api
+          env:
+          - name: AUTH_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: qa4mbes-secrets
+                key: AUTH_CLIENT_ID
+          - name: AUTH_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: qa4mbes-secrets
+                key: AUTH_CLIENT_SECRET
+          - name: JWT_TOKEN_KEY_PRIVATE
+            valueFrom:
+              secretKeyRef:
+                name: qa4mbes-secrets
+                key: JWT_TOKEN_KEY_PRIVATE
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: qa4mbes-secrets
+                key: POSTGRES_USER
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: qa4mbes-secrets
+                key: POSTGRES_PASSWORD
+          - name: NODE_ENV
+            value: "production"
+          - name: RDS_MODE
+            value: 'true'
+          - name: POSTGRES_HOSTNAME
+            value: "postgres.cfiemb305lj4.ap-southeast-2.rds.amazonaws.com"
+          - name: POSTGRES_PORT
+            value: "5432"
+          - name: POSTGRES_DATABASE
+            value: "postgres"
+          - name: AUTH_HOST
+            value: "https://ausseabed-nonprod.auth.ap-southeast-2.amazoncognito.com/"
+          - name: AWS_REGION
+            value: "ap-southeast-2"
+          resources: {}
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: regcred
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: api
+  name: api
+  namespace: qa4mbes
+spec:
+  ports:
+   - port: 3000
+     targetPort: 3000
+  type: NodePort
+  selector:
+    app.kubernetes.io/name: api

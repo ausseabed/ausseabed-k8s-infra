@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mapserver
+  namespace: qa4mbes
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mapserver
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/name: mapserver
+    spec:
+      containers:
+        - image: ausseabed/spt-mapserver:latest-beta
+          imagePullPolicy: Always
+          name: mapserver
+          env:
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: qa4mbes-secrets
+                key: POSTGRES_USER
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: qa4mbes-secrets
+                key: POSTGRES_PASSWORD
+          - name: POSTGRES_HOSTNAME
+            value: "postgres.cfiemb305lj4.ap-southeast-2.rds.amazonaws.com"
+          - name: POSTGRES_PORT
+            value: "5432"
+          - name: POSTGRES_DATABASE
+            value: "posgres"
+          - name: AWS_REGION
+            value: "ap-southeast-2"
+          resources: {}
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: regcred
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: mapserver
+  name: mapserver
+  namespace: qa4mbes
+spec:
+  ports:
+   - port: 80
+     targetPort: 80
+  type: NodePort
+  selector:
+    app.kubernetes.io/name: db-postgres

@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: www
+  namespace: qa4mbes
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: www
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/name: www
+    spec:
+      containers:
+        - image: ausseabed/spt-www:latest-beta
+          imagePullPolicy: Always
+          name: www
+          env:
+          - name: NODE_ENV
+            value: "production"
+          resources: {}
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: regcred
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: www
+  name: www
+  namespace: qa4mbes
+spec:
+  ports:
+   - port: 80
+     targetPort: 80
+  type: NodePort
+  selector:
+    app.kubernetes.io/name: www

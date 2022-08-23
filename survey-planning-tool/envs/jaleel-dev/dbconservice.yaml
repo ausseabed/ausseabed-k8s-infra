@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: qa4mbes
+spec:
+  type: ExternalName
+  externalName: postgres.cfiemb305lj4.ap-southeast-2.rds.amazonaws.com
+  ports:
+  - port: 5432
+    protocol: TCP
+    targetPort: 5432
+  sessionAffinity: None
