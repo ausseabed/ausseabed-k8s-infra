@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-postgres
+  namespace: spt
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: db-postgres
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/name: db-postgres
+    spec:
+      containers:
+        - image: mdillon/postgis:9.6
+          imagePullPolicy: Always
+          name: db-postgres
+          env:
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: spt-secrets
+                key: POSTGRES_USER
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: spt-secrets
+                key: POSTGRES_PASSWORD
+          - name: POSTGRES_HOSTNAME
+            value: "db-postgres"
+          - name: POSTGRES_PORT
+            value: "5432"
+          - name: POSTGRES_DATABASE
+            value: "postgres"
+          - name: PGDATA
+            value: "/var/lib/postgresql/db-data/pgdata"
+          - name: POSTGIS_ENABLE_OUTDB_RASTERS
+            value: "1"
+          - name: POSTGIS_GDAL_ENABLED_DRIVERS
+            value: "ENABLE_ALL"
+          resources: {}
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql/db-data
+      restartPolicy: Always
+      volumes:
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: postgres-pv-claim
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: db-postgres
+  name: db-postgres
+  namespace: spt
+spec:
+  ports:
+   - port: 5432
+  selector:
+    app.kubernetes.io/name: db-postgres
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: ebs-sc
+  namespace: spt
+provisioner: ebs.csi.aws.com
+volumeBindingMode: WaitForFirstConsumer
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pv-claim
+  namespace: spt
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ebs-sc
+  resources:
+    requests:
+      storage: 10Gi
