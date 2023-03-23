@@ -17,7 +17,7 @@ spec:
         app.kubernetes.io/name: api
     spec:
       containers:
-        - image: ausseabed/spt-api:2262c28
+        - image: 831535125571.dkr.ecr.ap-southeast-2.amazonaws.com/ausseabed-prod-sct-api:3d3c757a30b9e331b3e6f0060a319080fd62187b
           imagePullPolicy: Always
           name: api
           env:
