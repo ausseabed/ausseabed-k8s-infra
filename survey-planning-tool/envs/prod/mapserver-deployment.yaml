@@ -17,7 +17,7 @@ spec:
         app.kubernetes.io/name: mapserver
     spec:
       containers:
-        - image: 831535125571.dkr.ecr.ap-southeast-2.amazonaws.com/ausseabed-prod-sct-mapserver:3d3c757a30b9e331b3e6f0060a319080fd62187b
+        - image: 831535125571.dkr.ecr.ap-southeast-2.amazonaws.com/ausseabed-prod-sct-mapserver:2b6dda3fa8173edaa3a6d31e3b65fd2647cfc33b
           imagePullPolicy: Always
           name: mapserver
           env:
