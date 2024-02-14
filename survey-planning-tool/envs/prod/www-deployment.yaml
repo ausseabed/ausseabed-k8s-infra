@@ -17,7 +17,7 @@ spec:
         app.kubernetes.io/name: www
     spec:
       containers:
-        - image: 831535125571.dkr.ecr.ap-southeast-2.amazonaws.com/ausseabed-prod-sct-www:ae23214c835c3d64080e3d9b2dc78128b675ebf0
+        - image: 831535125571.dkr.ecr.ap-southeast-2.amazonaws.com/ausseabed-prod-sct-www:405cbdbacea1a672bd9338ebe5fa01a4db5b7142
           imagePullPolicy: Always
           name: www
           env:
