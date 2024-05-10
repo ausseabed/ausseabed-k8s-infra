@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mapserver
+  namespace: spt
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mapserver
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/name: mapserver
+    spec:
+      containers:
+        - image: 831535125571.dkr.ecr.ap-southeast-2.amazonaws.com/ausseabed-prod-sct-mapserver:a683065264e71405ba56306ca1c3364bf7a0d474
+          imagePullPolicy: Always
+          name: mapserver
+          env:
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: spt-secrets
+                key: POSTGRES_USER
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: spt-secrets
+                key: POSTGRES_PASSWORD
+          - name: POSTGRES_HOSTNAME
+            valueFrom:
+              secretKeyRef:
+                name: spt-secrets
+                key: POSTGRES_HOSTNAME
+          - name: POSTGRES_PORT
+            value: "5432"
+          - name: POSTGRES_DB
+            value: "postgres"
+          - name: AWS_REGION
+            value: "ap-southeast-2"
+          resources: {}
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: regcred
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: mapserver
+  name: mapserver
+  namespace: spt
+spec:
+  ports:
+   - port: 80
+     targetPort: 80
+  selector:
+    app.kubernetes.io/name: mapserver
