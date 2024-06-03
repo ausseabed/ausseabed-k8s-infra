@@ -17,7 +17,7 @@ spec:
         app.kubernetes.io/name: api
     spec:
       containers:
-        - image: 831535125571.dkr.ecr.ap-southeast-2.amazonaws.com/ausseabed-prod-sct-api:a683065264e71405ba56306ca1c3364bf7a0d474
+        - image: 831535125571.dkr.ecr.ap-southeast-2.amazonaws.com/ausseabed-prod-sct-api:954488205fcd02481050d68ac6a37e7cdf837a63
           imagePullPolicy: Always
           name: api
           env:
