@@ -16,10 +16,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - coordination2.ausseabed.gov.au
+    - coordination.ausseabed.gov.au
     secretName: spt-tls
   rules:
-  - host: coordination2.ausseabed.gov.au
+  - host: coordination.ausseabed.gov.au
     http:
       paths:
       - path: /
